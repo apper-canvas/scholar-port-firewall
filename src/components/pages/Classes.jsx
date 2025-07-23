@@ -597,26 +597,222 @@ const ViewClassModal = ({ classItem, students, onClose }) => {
   );
 };
 
-// Edit Class Modal Component (placeholder for future implementation)
+// Edit Class Modal Component
 const EditClassModal = ({ classItem, students, onClose, onSuccess }) => {
+  const [formData, setFormData] = useState({
+    name: classItem?.name || "",
+    subject: classItem?.subject || "",
+    period: classItem?.period || "",
+    room: classItem?.room || "",
+    studentIds: classItem?.studentIds || []
+  });
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = "Class name is required";
+    }
+    
+    if (!formData.subject.trim()) {
+      newErrors.subject = "Subject is required";
+    }
+    
+    if (!formData.period.trim()) {
+      newErrors.period = "Period is required";
+    }
+    
+    if (!formData.room.trim()) {
+      newErrors.room = "Room is required";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await classService.update(classItem.Id, formData);
+      if (result) {
+        toast.success("Class updated successfully!");
+        onSuccess();
+      }
+    } catch (error) {
+      toast.error("Failed to update class. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ""
+      }));
+    }
+  };
+
+  const handleStudentSelection = (studentId) => {
+    setFormData(prev => ({
+      ...prev,
+      studentIds: prev.studentIds.includes(studentId)
+        ? prev.studentIds.filter(id => id !== studentId)
+        : [...prev.studentIds, studentId]
+    }));
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-lg shadow-xl w-full max-w-md p-6"
+        className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
       >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-display font-bold gradient-text">Edit Class</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <ApperIcon name="X" size={20} />
-          </Button>
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-display font-bold gradient-text">Edit Class</h2>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <ApperIcon name="X" size={20} />
+            </Button>
+          </div>
         </div>
-        <p className="text-gray-600 mb-6">Edit functionality will be implemented in a future update.</p>
-        <div className="flex justify-end">
-          <Button onClick={onClose}>Close</Button>
-        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Class Name *
+              </label>
+              <Input
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                placeholder="Enter class name"
+                className={errors.name ? "border-error-500" : ""}
+              />
+              {errors.name && (
+                <p className="text-error-600 text-sm mt-1">{errors.name}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Subject *
+              </label>
+              <Input
+                type="text"
+                value={formData.subject}
+                onChange={(e) => handleInputChange("subject", e.target.value)}
+                placeholder="Enter subject"
+                className={errors.subject ? "border-error-500" : ""}
+              />
+              {errors.subject && (
+                <p className="text-error-600 text-sm mt-1">{errors.subject}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Period *
+              </label>
+              <Input
+                type="text"
+                value={formData.period}
+                onChange={(e) => handleInputChange("period", e.target.value)}
+                placeholder="Enter period (e.g., 1st, 2nd)"
+                className={errors.period ? "border-error-500" : ""}
+              />
+              {errors.period && (
+                <p className="text-error-600 text-sm mt-1">{errors.period}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Room *
+              </label>
+              <Input
+                type="text"
+                value={formData.room}
+                onChange={(e) => handleInputChange("room", e.target.value)}
+                placeholder="Enter room number"
+                className={errors.room ? "border-error-500" : ""}
+              />
+              {errors.room && (
+                <p className="text-error-600 text-sm mt-1">{errors.room}</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Enroll Students (Optional)
+            </label>
+            <div className="border border-gray-300 rounded-md p-3 max-h-48 overflow-y-auto">
+              {students.length === 0 ? (
+                <p className="text-gray-500 text-sm">No students available</p>
+              ) : (
+                <div className="space-y-2">
+                  {students.map((student) => (
+                    <label key={student.Id} className="flex items-center space-x-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.studentIds.includes(student.Id)}
+                        onChange={() => handleStudentSelection(student.Id)}
+                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      />
+                      <span className="text-sm text-gray-700">
+                        {student.first_name_c} {student.last_name_c}
+                        {student.email_c && <span className="text-gray-500 ml-1">({student.email_c})</span>}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+            {formData.studentIds.length > 0 && (
+              <p className="text-sm text-gray-600 mt-2">
+                {formData.studentIds.length} student{formData.studentIds.length !== 1 ? 's' : ''} selected
+              </p>
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+            <Button type="button" variant="ghost" onClick={onClose} disabled={loading}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <ApperIcon name="Loader2" className="mr-2 animate-spin" size={16} />
+                  Updating...
+                </>
+              ) : (
+                <>
+                  <ApperIcon name="Save" className="mr-2" size={16} />
+                  Update Class
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
       </motion.div>
     </div>
   );
