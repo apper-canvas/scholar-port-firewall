@@ -1,26 +1,31 @@
-import React, { useState, useEffect } from "react";
-import Header from "@/components/organisms/Header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Input from "@/components/atoms/Input";
-import Select from "@/components/atoms/Select";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import Header from "@/components/organisms/Header";
+import Students from "@/components/pages/Students";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
+import Select from "@/components/atoms/Select";
+import Input from "@/components/atoms/Input";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
 import { classService } from "@/services/api/classService";
 import { studentService } from "@/services/api/studentService";
-import { toast } from "react-toastify";
 
 const Classes = ({ onMenuClick }) => {
   const [classes, setClasses] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const loadData = async () => {
     setLoading(true);
     setError("");
@@ -58,6 +63,33 @@ const getStudentNames = (studentIds) => {
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
+};
+
+  const handleView = (classItem) => {
+    setSelectedClass(classItem);
+    setShowViewModal(true);
+  };
+
+  const handleEdit = (classItem) => {
+    setSelectedClass(classItem);
+    setShowEditModal(true);
+  };
+
+  const handleDelete = (classItem) => {
+    setSelectedClass(classItem);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await classService.delete(selectedClass.Id);
+      toast.success("Class deleted successfully!");
+      setShowDeleteConfirm(false);
+      setSelectedClass(null);
+      loadData();
+    } catch (error) {
+      toast.error("Failed to delete class. Please try again.");
+    }
   };
 
   const renderContent = () => {
@@ -133,16 +165,31 @@ const getStudentNames = (studentIds) => {
                     </div>
                   )}
 
-                  <div className="flex space-x-2 pt-4 border-t border-gray-200">
-                    <Button variant="ghost" size="sm" className="flex-1">
+<div className="flex space-x-2 pt-4 border-t border-gray-200">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleView(classItem)}
+                    >
                       <ApperIcon name="Eye" className="mr-1" size={14} />
                       View
                     </Button>
-                    <Button variant="ghost" size="sm" className="flex-1">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleEdit(classItem)}
+                    >
                       <ApperIcon name="Edit" className="mr-1" size={14} />
                       Edit
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-error-600 hover:text-error-700">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-error-600 hover:text-error-700"
+                      onClick={() => handleDelete(classItem)}
+                    >
                       <ApperIcon name="Trash2" size={14} />
                     </Button>
                   </div>
@@ -174,7 +221,7 @@ return (
       <main className="p-6">
         {renderContent()}
         
-        {showCreateModal && (
+{showCreateModal && (
           <CreateClassModal
             onClose={() => setShowCreateModal(false)}
             onSuccess={() => {
@@ -182,6 +229,44 @@ return (
               loadData();
             }}
             students={students}
+          />
+        )}
+
+        {showViewModal && selectedClass && (
+          <ViewClassModal
+            classItem={selectedClass}
+            students={students}
+            onClose={() => {
+              setShowViewModal(false);
+              setSelectedClass(null);
+            }}
+          />
+        )}
+
+        {showEditModal && selectedClass && (
+          <EditClassModal
+            classItem={selectedClass}
+            students={students}
+            onClose={() => {
+              setShowEditModal(false);
+              setSelectedClass(null);
+            }}
+            onSuccess={() => {
+              setShowEditModal(false);
+              setSelectedClass(null);
+              loadData();
+            }}
+          />
+        )}
+
+        {showDeleteConfirm && selectedClass && (
+          <DeleteConfirmationDialog
+            classItem={selectedClass}
+            onClose={() => {
+              setShowDeleteConfirm(false);
+              setSelectedClass(null);
+            }}
+            onConfirm={handleDeleteConfirm}
           />
         )}
       </main>
@@ -407,7 +492,166 @@ const CreateClassModal = ({ onClose, onSuccess, students }) => {
         </form>
       </motion.div>
     </div>
+);
+};
+
+// View Class Modal Component
+const ViewClassModal = ({ classItem, students, onClose }) => {
+  const getStudentNames = (studentIds) => {
+    return studentIds
+      .map(id => {
+        const student = students.find(s => s.Id === id);
+        return student ? { 
+          id: student.Id,
+          name: `${student.first_name_c} ${student.last_name_c}`,
+          email: student.email_c,
+          grade: student.grade_level_c
+        } : null;
+      })
+      .filter(student => student !== null);
+  };
+
+  const enrolledStudents = getStudentNames(classItem.studentIds);
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-display font-bold gradient-text">Class Details</h2>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <ApperIcon name="X" size={20} />
+            </Button>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Class Information</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Class Name</label>
+                  <p className="text-gray-900 font-medium">{classItem.name}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Subject</label>
+                  <p className="text-gray-900">{classItem.subject}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Period</label>
+                  <p className="text-gray-900">{classItem.period}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Room</label>
+                  <p className="text-gray-900">{classItem.room}</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Enrollment</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Total Students</label>
+                  <p className="text-gray-900 font-medium">{enrolledStudents.length}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {enrolledStudents.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Enrolled Students</h3>
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <div className="max-h-60 overflow-y-auto">
+                  {enrolledStudents.map((student, index) => (
+                    <div key={student.id} className={`p-4 ${index !== enrolledStudents.length - 1 ? 'border-b border-gray-100' : ''}`}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-gray-900">{student.name}</p>
+                          <p className="text-sm text-gray-500">{student.email}</p>
+                        </div>
+                        <Badge variant="secondary">Grade {student.grade}</Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end p-6 border-t border-gray-200">
+          <Button onClick={onClose}>Close</Button>
+        </div>
+      </motion.div>
+    </div>
   );
 };
 
-export default Classes;
+// Edit Class Modal Component (placeholder for future implementation)
+const EditClassModal = ({ classItem, students, onClose, onSuccess }) => {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-lg shadow-xl w-full max-w-md p-6"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-display font-bold gradient-text">Edit Class</h2>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            <ApperIcon name="X" size={20} />
+          </Button>
+        </div>
+        <p className="text-gray-600 mb-6">Edit functionality will be implemented in a future update.</p>
+        <div className="flex justify-end">
+          <Button onClick={onClose}>Close</Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+// Delete Confirmation Dialog Component
+const DeleteConfirmationDialog = ({ classItem, onClose, onConfirm }) => {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-lg shadow-xl w-full max-w-md p-6"
+      >
+        <div className="flex items-center mb-4">
+          <div className="w-12 h-12 bg-error-100 rounded-full flex items-center justify-center mr-4">
+            <ApperIcon name="Trash2" className="text-error-600" size={24} />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Delete Class</h2>
+            <p className="text-sm text-gray-600">This action cannot be undone</p>
+          </div>
+        </div>
+        
+        <p className="text-gray-700 mb-6">
+          Are you sure you want to delete the class "{classItem.name}"? This will permanently remove the class and all associated data.
+        </p>
+        
+        <div className="flex justify-end space-x-3">
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button variant="error" onClick={onConfirm}>
+            <ApperIcon name="Trash2" className="mr-2" size={16} />
+            Delete Class
+          </Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
