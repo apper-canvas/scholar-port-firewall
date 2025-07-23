@@ -6,11 +6,12 @@ import { motion } from "framer-motion";
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
 
-  const menuItems = [
+const menuItems = [
     { path: "/", label: "Dashboard", icon: "LayoutDashboard" },
     { path: "/students", label: "Students", icon: "Users" },
     { path: "/classes", label: "Classes", icon: "BookOpen" },
     { path: "/grades", label: "Grades", icon: "FileText" },
+    { path: "/assignments", label: "Assignments", icon: "ClipboardList" },
     { path: "/attendance", label: "Attendance", icon: "Calendar" }
   ];
 

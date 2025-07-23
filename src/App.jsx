@@ -7,6 +7,7 @@ import Students from "@/components/pages/Students";
 import Classes from "@/components/pages/Classes";
 import Grades from "@/components/pages/Grades";
 import Attendance from "@/components/pages/Attendance";
+import Assignments from "@/components/pages/Assignments";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -25,12 +26,13 @@ function App() {
         <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />
         
         <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
-          <Routes>
+<Routes>
             <Route path="/" element={<Dashboard onMenuClick={handleMenuClick} />} />
             <Route path="/students" element={<Students onMenuClick={handleMenuClick} />} />
             <Route path="/classes" element={<Classes onMenuClick={handleMenuClick} />} />
             <Route path="/grades" element={<Grades onMenuClick={handleMenuClick} />} />
             <Route path="/attendance" element={<Attendance onMenuClick={handleMenuClick} />} />
+            <Route path="/assignments" element={<Assignments onMenuClick={handleMenuClick} />} />
           </Routes>
         </div>
         

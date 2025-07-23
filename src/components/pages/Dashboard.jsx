@@ -10,14 +10,17 @@ import { studentService } from "@/services/api/studentService";
 import { classService } from "@/services/api/classService";
 import { attendanceService } from "@/services/api/attendanceService";
 import { gradeService } from "@/services/api/gradeService";
+import { assignmentService } from "@/services/api/assignmentService";
 import { format } from "date-fns";
 
 const Dashboard = ({ onMenuClick }) => {
-  const [dashboardData, setDashboardData] = useState({
+const [dashboardData, setDashboardData] = useState({
     totalStudents: 0,
     totalClasses: 0,
     presentToday: 0,
-    averageGrade: 0
+    averageGrade: 0,
+    totalAssignments: 0,
+    pendingSubmissions: 0
   });
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,11 +30,12 @@ const Dashboard = ({ onMenuClick }) => {
     setLoading(true);
     setError("");
     try {
-      const [students, classes, attendance, grades] = await Promise.all([
+const [students, classes, attendance, grades, assignments] = await Promise.all([
         studentService.getAll(),
         classService.getAll(),
         attendanceService.getAll(),
-        gradeService.getAll()
+        gradeService.getAll(),
+        assignmentService.getAll()
       ]);
 
       const today = format(new Date(), "yyyy-MM-dd");
@@ -41,15 +45,22 @@ const Dashboard = ({ onMenuClick }) => {
       const totalGrades = grades.reduce((sum, grade) => sum + grade.score, 0);
       const averageGrade = grades.length > 0 ? Math.round(totalGrades / grades.length) : 0;
 
+const pendingSubmissions = assignments.reduce((count, assignment) => {
+        return count + (assignment.submissions?.filter(s => s.status === 'pending').length || 0);
+      }, 0);
+
       setDashboardData({
         totalStudents: students.length,
         totalClasses: classes.length,
         presentToday,
-        averageGrade
+        averageGrade,
+        totalAssignments: assignments.length,
+        pendingSubmissions
       });
 
       // Create recent activity
-      const activities = [
+const activities = [
+        { type: "assignment", message: `${pendingSubmissions} assignment submissions pending review`, time: "1 hour ago", icon: "ClipboardList" },
         { type: "attendance", message: `${presentToday} students marked present today`, time: "2 hours ago", icon: "Calendar" },
         { type: "grade", message: `${grades.length} grades recorded this week`, time: "5 hours ago", icon: "FileText" },
         { type: "student", message: `${students.filter(s => s.status === "active").length} active students enrolled`, time: "1 day ago", icon: "Users" },
@@ -80,7 +91,7 @@ const Dashboard = ({ onMenuClick }) => {
       
       <main className="p-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total Students"
             value={dashboardData.totalStudents}
@@ -106,12 +117,12 @@ const Dashboard = ({ onMenuClick }) => {
             trendValue="85% attendance rate"
           />
           <StatCard
-            title="Average Grade"
-            value={`${dashboardData.averageGrade}%`}
-            icon="TrendingUp"
+            title="Assignments"
+            value={dashboardData.totalAssignments}
+            icon="ClipboardList"
             color="warning"
             trend="up"
-            trendValue="+3% from last month"
+            trendValue={`${dashboardData.pendingSubmissions} pending`}
           />
         </div>
 
@@ -198,13 +209,13 @@ const Dashboard = ({ onMenuClick }) => {
                     </div>
                   </motion.div>
 
-                  <motion.div
+<motion.div
                     whileHover={{ scale: 1.02 }}
                     className="p-4 bg-gradient-to-br from-warning-50 to-warning-100 rounded-lg cursor-pointer border border-warning-200"
                   >
                     <div className="flex flex-col items-center text-center">
-                      <ApperIcon name="BarChart3" className="text-warning-600 mb-2" size={24} />
-                      <span className="text-sm font-medium text-warning-900">View Reports</span>
+                      <ApperIcon name="ClipboardList" className="text-warning-600 mb-2" size={24} />
+                      <span className="text-sm font-medium text-warning-900">Create Assignment</span>
                     </div>
                   </motion.div>
                 </div>
