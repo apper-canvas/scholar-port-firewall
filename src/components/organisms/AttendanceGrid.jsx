@@ -42,7 +42,7 @@ const AttendanceGrid = ({ students, attendance, selectedDate, onAttendanceChange
             const statusConfig = getStatusConfig(currentStatus);
 
             return (
-              <motion.div
+<motion.div
                 key={student.Id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -52,14 +52,14 @@ const AttendanceGrid = ({ students, attendance, selectedDate, onAttendanceChange
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mr-4">
                     <span className="text-white font-medium text-sm">
-                      {student.firstName[0]}{student.lastName[0]}
+                      {student.first_name_c?.[0] || ''}{student.last_name_c?.[0] || ''}
                     </span>
                   </div>
                   <div>
                     <div className="font-medium text-gray-900">
-                      {student.firstName} {student.lastName}
+                      {student.first_name_c} {student.last_name_c}
                     </div>
-                    <div className="text-sm text-gray-500">Grade {student.gradeLevel}</div>
+                    <div className="text-sm text-gray-500">Grade {student.grade_level_c}</div>
                   </div>
                 </div>
 
