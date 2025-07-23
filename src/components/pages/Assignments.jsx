@@ -30,7 +30,7 @@ const Assignments = ({ onMenuClick }) => {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [progressData, setProgressData] = useState({});
 
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     title: "",
     description: "",
     instructions: "",
@@ -38,11 +38,11 @@ const Assignments = ({ onMenuClick }) => {
     totalPoints: "",
     dueDate: "",
     category: "",
+    status: "pending",
     reminderEnabled: true
   });
-
-  const categories = ["Quiz", "Homework", "Exam", "Essay", "Lab", "Project"];
-
+const categories = ["Quiz", "Homework", "Exam", "Essay", "Lab", "Project"];
+  const statuses = ["pending", "in progress", "completed", "submitted", "graded"];
   const loadData = async () => {
     setLoading(true);
     setError("");
@@ -77,8 +77,8 @@ const Assignments = ({ onMenuClick }) => {
 
 const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.classId || !formData.totalPoints || !formData.dueDate || !formData.category) {
-      toast.error("Please fill in all required fields: title, class, category, total points, and due date");
+if (!formData.title || !formData.classId || !formData.totalPoints || !formData.dueDate || !formData.category || !formData.status) {
+      toast.error("Please fill in all required fields: title, class, category, status, total points, and due date");
       return;
     }
 
@@ -102,7 +102,7 @@ const handleSubmit = async (e) => {
 
 const handleEdit = (assignment) => {
     setEditingAssignment(assignment);
-    setFormData({
+setFormData({
       title: assignment.title,
       description: assignment.description || "",
       instructions: assignment.instructions || "",
@@ -110,6 +110,7 @@ const handleEdit = (assignment) => {
       totalPoints: assignment.totalPoints ? assignment.totalPoints.toString() : "",
       dueDate: assignment.dueDate,
       category: assignment.category,
+      status: assignment.status || "pending",
       reminderEnabled: assignment.reminderEnabled ?? true
     });
     setShowForm(true);
@@ -137,7 +138,7 @@ const handleEdit = (assignment) => {
   };
 
   const resetForm = () => {
-    setFormData({
+setFormData({
       title: "",
       description: "",
       instructions: "",
@@ -145,6 +146,7 @@ const handleEdit = (assignment) => {
       totalPoints: "",
       dueDate: "",
       category: "",
+      status: "pending",
       reminderEnabled: true
     });
   };
@@ -427,6 +429,20 @@ return (
                       error=""
                     />
 
+<FormField
+                      label="Status"
+                      type="select"
+                      value={formData.status}
+                      onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
+                      placeholder="Select status"
+                      options={statuses.map(status => ({
+                        value: status,
+                        label: status.charAt(0).toUpperCase() + status.slice(1)
+                      }))}
+                      required
+                      error=""
+                    />
+
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
@@ -440,7 +456,6 @@ return (
                       </label>
                     </div>
                   </div>
-
 <FormField
                     label="Description"
                     type="textarea"
@@ -516,8 +531,20 @@ return (
                             {getStatusBadge(assignment)}
                           </div>
                           
-                          {assignment.description && (
+{assignment.description && (
                             <p className="text-sm text-gray-700 mb-2">{assignment.description}</p>
+                          )}
+                          
+                          {assignment.status && (
+                            <div className="mb-2">
+                              <Badge variant={
+                                assignment.status === 'completed' || assignment.status === 'graded' ? 'success' :
+                                assignment.status === 'in progress' || assignment.status === 'submitted' ? 'warning' :
+                                'default'
+                              }>
+                                {assignment.status.charAt(0).toUpperCase() + assignment.status.slice(1)}
+                              </Badge>
+                            </div>
                           )}
                           
                           <div className="flex items-center gap-4 text-sm text-gray-500">

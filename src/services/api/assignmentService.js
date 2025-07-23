@@ -10,7 +10,7 @@ export const assignmentService = {
       });
 
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "title_c" } },
           { field: { Name: "description_c" } },
@@ -18,6 +18,7 @@ export const assignmentService = {
           { field: { Name: "total_points_c" } },
           { field: { Name: "due_date_c" } },
           { field: { Name: "category_c" } },
+          { field: { Name: "status_c" } },
           { field: { Name: "reminder_enabled_c" } },
           { field: { Name: "class_id_c" } }
         ]
@@ -38,7 +39,8 @@ export const assignmentService = {
         instructions: assignment.instructions_c,
         totalPoints: assignment.total_points_c,
         dueDate: assignment.due_date_c,
-        category: assignment.category_c,
+category: assignment.category_c,
+        status: assignment.status_c,
         reminderEnabled: assignment.reminder_enabled_c,
         classId: assignment.class_id_c?.Id || assignment.class_id_c
       })) || [];
@@ -61,7 +63,7 @@ export const assignmentService = {
       });
 
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "title_c" } },
           { field: { Name: "description_c" } },
@@ -69,6 +71,7 @@ export const assignmentService = {
           { field: { Name: "total_points_c" } },
           { field: { Name: "due_date_c" } },
           { field: { Name: "category_c" } },
+          { field: { Name: "status_c" } },
           { field: { Name: "reminder_enabled_c" } },
           { field: { Name: "class_id_c" } }
         ],
@@ -94,7 +97,8 @@ export const assignmentService = {
         instructions: assignment.instructions_c,
         totalPoints: assignment.total_points_c,
         dueDate: assignment.due_date_c,
-        category: assignment.category_c,
+category: assignment.category_c,
+        status: assignment.status_c,
         reminderEnabled: assignment.reminder_enabled_c,
         classId: assignment.class_id_c?.Id || assignment.class_id_c
       })) || [];
@@ -117,7 +121,7 @@ export const assignmentService = {
       });
 
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "title_c" } },
           { field: { Name: "description_c" } },
@@ -125,6 +129,7 @@ export const assignmentService = {
           { field: { Name: "total_points_c" } },
           { field: { Name: "due_date_c" } },
           { field: { Name: "category_c" } },
+          { field: { Name: "status_c" } },
           { field: { Name: "reminder_enabled_c" } },
           { field: { Name: "class_id_c" } }
         ]
@@ -144,7 +149,8 @@ export const assignmentService = {
         instructions: assignment.instructions_c,
         totalPoints: assignment.total_points_c,
         dueDate: assignment.due_date_c,
-        category: assignment.category_c,
+category: assignment.category_c,
+        status: assignment.status_c,
         reminderEnabled: assignment.reminder_enabled_c,
         classId: assignment.class_id_c?.Id || assignment.class_id_c
       };
@@ -174,7 +180,8 @@ export const assignmentService = {
           instructions_c: assignmentData.instructions || "",
           total_points_c: parseInt(assignmentData.totalPoints),
           due_date_c: assignmentData.dueDate,
-          category_c: assignmentData.category,
+category_c: assignmentData.category,
+          status_c: assignmentData.status,
           reminder_enabled_c: assignmentData.reminderEnabled || false,
           class_id_c: parseInt(assignmentData.classId)
         }]
@@ -232,6 +239,7 @@ export const assignmentService = {
           total_points_c: parseInt(assignmentData.totalPoints),
           due_date_c: assignmentData.dueDate,
           category_c: assignmentData.category,
+status_c: assignmentData.status,
           reminder_enabled_c: assignmentData.reminderEnabled || false,
           class_id_c: parseInt(assignmentData.classId)
         }]
