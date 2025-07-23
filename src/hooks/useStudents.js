@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { studentService } from "@/services/api/studentService";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { studentService } from "@/services/api/studentService";
 
 export const useStudents = () => {
   const [students, setStudents] = useState([]);
@@ -32,11 +32,13 @@ export const useStudents = () => {
     }
   };
 
-  const updateStudent = async (id, studentData) => {
+const updateStudent = async (id, studentData) => {
     try {
       const updatedStudent = await studentService.update(id, studentData);
-      setStudents(prev => prev.map(s => s.Id === parseInt(id) ? updatedStudent : s));
-      toast.success("Student updated successfully!");
+      if (updatedStudent) {
+        setStudents(prev => prev.map(s => s.Id === parseInt(id) ? updatedStudent : s));
+        toast.success("Student updated successfully!");
+      }
       return updatedStudent;
     } catch (err) {
       toast.error(err.message || "Failed to update student");

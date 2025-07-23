@@ -1,41 +1,18 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { createContext, useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import Sidebar from "@/components/organisms/Sidebar";
-import Dashboard from "@/components/pages/Dashboard";
-import Students from "@/components/pages/Students";
-import Classes from "@/components/pages/Classes";
-import Grades from "@/components/pages/Grades";
-import Attendance from "@/components/pages/Attendance";
-import Assignments from "@/components/pages/Assignments";
+import { store } from "@/store/store";
+import AuthApp from "@/components/AuthApp";
+
+// Create auth context
+export const AuthContext = createContext(null);
 
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const handleMenuClick = () => {
-    setSidebarOpen(true);
-  };
-
-  const handleSidebarClose = () => {
-    setSidebarOpen(false);
-  };
-
   return (
-    <Router>
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />
-        
-        <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
-<Routes>
-            <Route path="/" element={<Dashboard onMenuClick={handleMenuClick} />} />
-            <Route path="/students" element={<Students onMenuClick={handleMenuClick} />} />
-            <Route path="/classes" element={<Classes onMenuClick={handleMenuClick} />} />
-            <Route path="/grades" element={<Grades onMenuClick={handleMenuClick} />} />
-            <Route path="/attendance" element={<Attendance onMenuClick={handleMenuClick} />} />
-            <Route path="/assignments" element={<Assignments onMenuClick={handleMenuClick} />} />
-          </Routes>
-        </div>
-        
+    <Provider store={store}>
+      <Router>
+        <AuthApp />
         <ToastContainer
           position="top-right"
           autoClose={3000}
@@ -48,8 +25,8 @@ function App() {
           pauseOnHover
           theme="colored"
         />
-      </div>
-    </Router>
+      </Router>
+    </Provider>
   );
 }
 

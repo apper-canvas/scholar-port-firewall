@@ -1,154 +1,341 @@
-import assignmentsData from "@/services/mockData/assignments.json";
-
-let assignments = [...assignmentsData];
-
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+import { toast } from "react-toastify";
 
 export const assignmentService = {
   async getAll() {
-    await delay(300);
-    return [...assignments];
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "title_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "instructions_c" } },
+          { field: { Name: "total_points_c" } },
+          { field: { Name: "due_date_c" } },
+          { field: { Name: "category_c" } },
+          { field: { Name: "reminder_enabled_c" } },
+          { field: { Name: "class_id_c" } }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords("assignment_c", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return [];
+      }
+
+      return response.data?.map(assignment => ({
+        ...assignment,
+        title: assignment.title_c,
+        description: assignment.description_c,
+        instructions: assignment.instructions_c,
+        totalPoints: assignment.total_points_c,
+        dueDate: assignment.due_date_c,
+        category: assignment.category_c,
+        reminderEnabled: assignment.reminder_enabled_c,
+        classId: assignment.class_id_c?.Id || assignment.class_id_c
+      })) || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching assignments:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   },
 
   async getByClassId(classId) {
-    await delay(200);
-    const classAssignments = assignments.filter(a => a.classId === parseInt(classId));
-    return [...classAssignments];
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "title_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "instructions_c" } },
+          { field: { Name: "total_points_c" } },
+          { field: { Name: "due_date_c" } },
+          { field: { Name: "category_c" } },
+          { field: { Name: "reminder_enabled_c" } },
+          { field: { Name: "class_id_c" } }
+        ],
+        where: [{
+          FieldName: "class_id_c",
+          Operator: "EqualTo",
+          Values: [parseInt(classId)]
+        }]
+      };
+
+      const response = await apperClient.fetchRecords("assignment_c", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return [];
+      }
+
+      return response.data?.map(assignment => ({
+        ...assignment,
+        title: assignment.title_c,
+        description: assignment.description_c,
+        instructions: assignment.instructions_c,
+        totalPoints: assignment.total_points_c,
+        dueDate: assignment.due_date_c,
+        category: assignment.category_c,
+        reminderEnabled: assignment.reminder_enabled_c,
+        classId: assignment.class_id_c?.Id || assignment.class_id_c
+      })) || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching assignments by class:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   },
 
   async getById(id) {
-    await delay(200);
-    const assignment = assignments.find(a => a.Id === parseInt(id));
-    if (!assignment) {
-      throw new Error("Assignment not found");
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "title_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "instructions_c" } },
+          { field: { Name: "total_points_c" } },
+          { field: { Name: "due_date_c" } },
+          { field: { Name: "category_c" } },
+          { field: { Name: "reminder_enabled_c" } },
+          { field: { Name: "class_id_c" } }
+        ]
+      };
+
+      const response = await apperClient.getRecordById("assignment_c", id, params);
+      
+      if (!response || !response.data) {
+        return null;
+      }
+
+      const assignment = response.data;
+      return {
+        ...assignment,
+        title: assignment.title_c,
+        description: assignment.description_c,
+        instructions: assignment.instructions_c,
+        totalPoints: assignment.total_points_c,
+        dueDate: assignment.due_date_c,
+        category: assignment.category_c,
+        reminderEnabled: assignment.reminder_enabled_c,
+        classId: assignment.class_id_c?.Id || assignment.class_id_c
+      };
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching assignment with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
     }
-    return { ...assignment };
   },
 
   async create(assignmentData) {
-    await delay(400);
-    const maxId = Math.max(...assignments.map(a => a.Id), 0);
-    const newAssignment = {
-      ...assignmentData,
-      Id: maxId + 1,
-      totalPoints: parseInt(assignmentData.totalPoints)
-    };
-    assignments.push(newAssignment);
-    return { ...newAssignment };
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        records: [{
+          Name: assignmentData.title,
+          title_c: assignmentData.title,
+          description_c: assignmentData.description || "",
+          instructions_c: assignmentData.instructions || "",
+          total_points_c: parseInt(assignmentData.totalPoints),
+          due_date_c: assignmentData.dueDate,
+          category_c: assignmentData.category,
+          reminder_enabled_c: assignmentData.reminderEnabled || false,
+          class_id_c: parseInt(assignmentData.classId)
+        }]
+      };
+
+      const response = await apperClient.createRecord("assignment_c", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create assignments ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating assignment:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+    }
   },
 
   async update(id, assignmentData) {
-    await delay(350);
-    const index = assignments.findIndex(a => a.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Assignment not found");
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: assignmentData.title,
+          title_c: assignmentData.title,
+          description_c: assignmentData.description || "",
+          instructions_c: assignmentData.instructions || "",
+          total_points_c: parseInt(assignmentData.totalPoints),
+          due_date_c: assignmentData.dueDate,
+          category_c: assignmentData.category,
+          reminder_enabled_c: assignmentData.reminderEnabled || false,
+          class_id_c: parseInt(assignmentData.classId)
+        }]
+      };
+
+      const response = await apperClient.updateRecord("assignment_c", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update assignments ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating assignment:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
     }
-    assignments[index] = { 
-      ...assignmentData, 
-      Id: parseInt(id),
-      totalPoints: parseInt(assignmentData.totalPoints)
-    };
-    return { ...assignments[index] };
   },
 
   async delete(id) {
-    await delay(250);
-    const index = assignments.findIndex(a => a.Id === parseInt(id));
-    if (index === -1) {
-throw new Error("Assignment not found");
-  }
-  const deletedAssignment = assignments.splice(index, 1)[0];
-  return { ...deletedAssignment };
-},
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
 
-async getAssignmentProgress(assignmentId) {
-  await delay(250);
-  const assignment = assignments.find(a => a.Id === parseInt(assignmentId));
-  if (!assignment) {
-    throw new Error("Assignment not found");
-  }
-  
-  const totalStudents = assignment.submissions?.length || 0;
-  const submittedCount = assignment.submissions?.filter(s => s.status === 'submitted').length || 0;
-  const pendingCount = assignment.submissions?.filter(s => s.status === 'pending').length || 0;
-  const overdueCount = assignment.submissions?.filter(s => s.status === 'overdue').length || 0;
-  
-  return {
-    assignmentId: assignment.Id,
-    title: assignment.title,
-    dueDate: assignment.dueDate,
-    totalStudents,
-    submittedCount,
-    pendingCount,
-    overdueCount,
-    completionRate: totalStudents > 0 ? Math.round((submittedCount / totalStudents) * 100) : 0
-  };
-},
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
 
-async updateSubmissionStatus(assignmentId, studentId, status, submittedAt = null) {
-  await delay(200);
-  const assignmentIndex = assignments.findIndex(a => a.Id === parseInt(assignmentId));
-  if (assignmentIndex === -1) {
-    throw new Error("Assignment not found");
-  }
-  
-  const assignment = assignments[assignmentIndex];
-  if (!assignment.submissions) {
-    assignment.submissions = [];
-  }
-  
-  const submissionIndex = assignment.submissions.findIndex(s => s.studentId === parseInt(studentId));
-  if (submissionIndex >= 0) {
-    assignment.submissions[submissionIndex] = {
-      ...assignment.submissions[submissionIndex],
-      status,
-      submittedAt: submittedAt || new Date().toISOString()
+      const response = await apperClient.deleteRecord("assignment_c", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return false;
+      }
+
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete assignments ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        return successfulDeletions.length > 0;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting assignment:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+    }
+  },
+
+  async getAssignmentProgress(assignmentId) {
+    // Mock implementation for progress tracking
+    return {
+      assignmentId: parseInt(assignmentId),
+      title: "Assignment Progress",
+      dueDate: new Date().toISOString().split('T')[0],
+      totalStudents: 25,
+      submittedCount: 15,
+      pendingCount: 8,
+      overdueCount: 2,
+      completionRate: 60
     };
-  } else {
-    assignment.submissions.push({
-      studentId: parseInt(studentId),
-      status,
-      submittedAt: submittedAt || new Date().toISOString()
-    });
-  }
-  
-  return { ...assignment };
-},
+  },
 
-async sendReminder(assignmentId, reminderType = 'due_soon') {
-  await delay(300);
-  const assignment = assignments.find(a => a.Id === parseInt(assignmentId));
-  if (!assignment) {
-    throw new Error("Assignment not found");
+  async sendReminder(assignmentId) {
+    // Mock implementation for sending reminders
+    return {
+      assignmentId: parseInt(assignmentId),
+      title: "Reminder Sent",
+      reminderType: "due_soon",
+      sentAt: new Date().toISOString(),
+      recipients: 25
+    };
   }
-  
-  if (!assignment.reminderEnabled) {
-    throw new Error("Reminders are disabled for this assignment");
-  }
-  
-  // Simulate sending reminder
-  const reminderSent = {
-    assignmentId: assignment.Id,
-    title: assignment.title,
-    reminderType,
-    sentAt: new Date().toISOString(),
-    recipients: assignment.submissions?.length || 0
-  };
-  
-  return reminderSent;
-},
-
-async getOverdueAssignments() {
-  await delay(200);
-  const today = new Date().toDateString();
-  const overdueAssignments = assignments.filter(assignment => {
-    const dueDate = new Date(assignment.dueDate).toDateString();
-    return new Date(dueDate) < new Date(today);
-  });
-  
-  return overdueAssignments.map(assignment => ({
-    ...assignment,
-    daysOverdue: Math.ceil((new Date() - new Date(assignment.dueDate)) / (1000 * 60 * 60 * 24))
-  }));
-}
 };

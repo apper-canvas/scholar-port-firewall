@@ -171,23 +171,23 @@ const StudentForm = ({ student, onSubmit, onCancel }) => {
               error={errors.enrollmentDate}
             />
 
-            <FormField
+<FormField
               label="Parent Contact"
-              value={formData.parentContact}
-              onChange={handleChange("parentContact")}
+              value={formData.parent_contact_c}
+              onChange={handleChange("parent_contact_c")}
               placeholder="Enter parent phone/email"
               required
-              error={errors.parentContact}
+              error={errors.parent_contact_c}
             />
 
             <FormField
               label="Status"
               type="select"
-              value={formData.status}
-              onChange={handleChange("status")}
+              value={formData.status_c}
+              onChange={handleChange("status_c")}
               options={statusOptions}
               required
-              error={errors.status}
+              error={errors.status_c}
             />
           </div>
 

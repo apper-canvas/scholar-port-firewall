@@ -61,16 +61,16 @@ const StudentTable = ({ students, onEdit, onDelete, onView }) => {
                   <td className="py-4 px-6 text-gray-900">
                     Grade {student.gradeLevel}
                   </td>
-                  <td className="py-4 px-6 text-gray-900">
-                    {format(new Date(student.enrollmentDate), "MMM dd, yyyy")}
+<td className="py-4 px-6 text-gray-900">
+                    {format(new Date(student.enrollment_date_c), "MMM dd, yyyy")}
                   </td>
                   <td className="py-4 px-6">
-                    <Badge variant={getStatusVariant(student.status)}>
-                      {student.status}
+                    <Badge variant={getStatusVariant(student.status_c)}>
+                      {student.status_c}
                     </Badge>
                   </td>
                   <td className="py-4 px-6 text-gray-900">
-                    {student.parentContact}
+                    {student.parent_contact_c}
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-end space-x-2">
