@@ -100,14 +100,14 @@ const handleSubmit = async (e) => {
     }
   };
 
-  const handleEdit = (assignment) => {
+const handleEdit = (assignment) => {
     setEditingAssignment(assignment);
     setFormData({
       title: assignment.title,
       description: assignment.description || "",
       instructions: assignment.instructions || "",
-      classId: assignment.classId.toString(),
-      totalPoints: assignment.totalPoints.toString(),
+      classId: assignment.classId ? assignment.classId.toString() : "",
+      totalPoints: assignment.totalPoints ? assignment.totalPoints.toString() : "",
       dueDate: assignment.dueDate,
       category: assignment.category,
       reminderEnabled: assignment.reminderEnabled ?? true
@@ -170,8 +170,8 @@ const handleSubmit = async (e) => {
   };
 
   const filteredAssignments = assignments.filter(assignment => {
-    const matchesSearch = assignment.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesClass = !selectedClass || assignment.classId.toString() === selectedClass;
+const matchesSearch = assignment.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesClass = !selectedClass || (assignment.classId ? assignment.classId.toString() === selectedClass : false);
     const matchesCategory = !categoryFilter || assignment.category === categoryFilter;
     return matchesSearch && matchesClass && matchesCategory;
   });
