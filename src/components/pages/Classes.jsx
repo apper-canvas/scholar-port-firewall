@@ -271,8 +271,10 @@ return (
         )}
       </main>
     </div>
-  );
+);
 };
+
+export default Classes;
 
 // Create Class Modal Component
 const CreateClassModal = ({ onClose, onSuccess, students }) => {
