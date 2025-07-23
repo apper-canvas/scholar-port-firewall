@@ -74,10 +74,10 @@ const Assignments = ({ onMenuClick }) => {
     loadData();
   }, []);
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.classId || !formData.totalPoints || !formData.dueDate) {
-      toast.error("Please fill in all required fields");
+    if (!formData.title || !formData.classId || !formData.totalPoints || !formData.dueDate || !formData.category) {
+      toast.error("Please fill in all required fields: title, class, category, total points, and due date");
       return;
     }
 
