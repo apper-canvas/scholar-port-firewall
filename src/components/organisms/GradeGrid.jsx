@@ -72,18 +72,18 @@ const GradeGrid = ({ students, assignments, grades, onGradeChange, onSave }) => 
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                     className="hover:bg-gray-50"
                   >
-                    <td className="sticky left-0 bg-white py-3 px-4 border-r border-gray-200">
+<td className="sticky left-0 bg-white py-3 px-4 border-r border-gray-200">
                       <div className="flex items-center">
                         <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mr-3">
                           <span className="text-white font-medium text-xs">
-                            {student.firstName[0]}{student.lastName[0]}
+                            {student.first_name_c[0]}{student.last_name_c[0]}
                           </span>
                         </div>
                         <div>
                           <div className="font-medium text-gray-900 text-sm">
-                            {student.firstName} {student.lastName}
+                            {student.first_name_c} {student.last_name_c}
                           </div>
-                          <div className="text-xs text-gray-500">Grade {student.gradeLevel}</div>
+                          <div className="text-xs text-gray-500">Grade {student.grade_level_c}</div>
                         </div>
                       </div>
                     </td>
