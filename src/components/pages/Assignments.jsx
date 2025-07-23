@@ -3,7 +3,7 @@ import Header from "@/components/organisms/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Input";
-import { Select } from "@/components/atoms/Select";
+import Select from "@/components/atoms/Select";
 import Badge from "@/components/atoms/Badge";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
