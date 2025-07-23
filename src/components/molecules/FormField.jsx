@@ -13,10 +13,14 @@ const FormField = ({
   error,
   className = ""
 }) => {
-  const renderInput = () => {
-if (type === "select") {
+const renderInput = () => {
+    // Provide fallback onChange to prevent React warning about controlled components
+    const defaultOnChange = () => {};
+    const handleChange = onChange || defaultOnChange;
+
+    if (type === "select") {
       return (
-        <Select value={value ?? ""} onChange={onChange} required={required}>
+        <Select value={value ?? ""} onChange={handleChange} required={required}>
           <option value="">{placeholder || `Select ${label}`}</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -27,11 +31,11 @@ if (type === "select") {
       );
     }
 
-return (
+    return (
       <Input
         type={type}
         value={value ?? ""}
-        onChange={onChange}
+        onChange={handleChange}
         placeholder={placeholder}
         required={required}
       />
