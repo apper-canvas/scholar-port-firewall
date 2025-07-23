@@ -42,11 +42,11 @@ const Classes = ({ onMenuClick }) => {
     loadData();
   }, []);
 
-  const getStudentNames = (studentIds) => {
+const getStudentNames = (studentIds) => {
     return studentIds
       .map(id => {
         const student = students.find(s => s.Id === id);
-        return student ? `${student.firstName} ${student.lastName}` : "";
+        return student ? `${student.first_name_c} ${student.last_name_c}` : "";
       })
       .filter(name => name);
   };
@@ -369,10 +369,10 @@ const CreateClassModal = ({ onClose, onSuccess, students }) => {
                         checked={formData.studentIds.includes(student.Id)}
                         onChange={() => handleStudentSelection(student.Id)}
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                      />
+/>
                       <span className="text-sm text-gray-700">
-                        {student.firstName} {student.lastName}
-                        {student.email && <span className="text-gray-500 ml-1">({student.email})</span>}
+                        {student.first_name_c} {student.last_name_c}
+                        {student.email_c && <span className="text-gray-500 ml-1">({student.email_c})</span>}
                       </span>
                     </label>
                   ))}
