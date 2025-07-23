@@ -28,14 +28,31 @@ export const classService = {
         return [];
       }
 
-      return response.data?.map(cls => ({
-        ...cls,
-        name: cls.Name,
-        subject: cls.subject_c,
-        period: cls.period_c,
-        room: cls.room_c,
-        studentIds: cls.student_ids_c?.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id)) || []
-      })) || [];
+      // Get all students to map picklist indices back to student IDs
+      const students = await studentService.getAll();
+
+      return response.data?.map(cls => {
+        // Convert picklist values back to actual student IDs
+        let studentIds = [];
+        if (cls.student_ids_c) {
+          const picklistValues = cls.student_ids_c.split(',').map(val => parseInt(val.trim())).filter(val => !isNaN(val));
+          studentIds = picklistValues
+            .map(picklistIndex => {
+              const studentIndex = picklistIndex - 1; // Convert 1-based to 0-based
+              return students[studentIndex]?.Id || null;
+            })
+            .filter(id => id !== null);
+        }
+
+        return {
+          ...cls,
+          name: cls.Name,
+          subject: cls.subject_c,
+          period: cls.period_c,
+          room: cls.room_c,
+          studentIds: studentIds
+        };
+      }) || [];
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error fetching classes:", error?.response?.data?.message);
@@ -70,14 +87,30 @@ export const classService = {
         return null;
       }
 
-      const cls = response.data;
+const cls = response.data;
+      
+      // Get all students to map picklist indices back to student IDs
+      const students = await studentService.getAll();
+      
+      // Convert picklist values back to actual student IDs
+      let studentIds = [];
+      if (cls.student_ids_c) {
+        const picklistValues = cls.student_ids_c.split(',').map(val => parseInt(val.trim())).filter(val => !isNaN(val));
+        studentIds = picklistValues
+          .map(picklistIndex => {
+            const studentIndex = picklistIndex - 1; // Convert 1-based to 0-based
+            return students[studentIndex]?.Id || null;
+          })
+          .filter(id => id !== null);
+      }
+
       return {
         ...cls,
         name: cls.Name,
         subject: cls.subject_c,
         period: cls.period_c,
         room: cls.room_c,
-        studentIds: cls.student_ids_c?.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id)) || []
+        studentIds: studentIds
       };
     } catch (error) {
       if (error?.response?.data?.message) {
