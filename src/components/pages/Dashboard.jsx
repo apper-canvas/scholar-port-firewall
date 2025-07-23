@@ -28,11 +28,12 @@ const Dashboard = ({ onMenuClick }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadDashboardData = async () => {
+const loadDashboardData = async () => {
     setLoading(true);
     setError("");
     try {
-const [students, classes, attendance, grades, assignments] = await Promise.all([
+      // Enhanced service calls to include system fields for real-time activity generation
+      const [students, classes, attendance, grades, assignments] = await Promise.all([
         studentService.getAll(),
         classService.getAll(),
         attendanceService.getAll(),
@@ -47,7 +48,7 @@ const [students, classes, attendance, grades, assignments] = await Promise.all([
       const totalGrades = grades.reduce((sum, grade) => sum + grade.score, 0);
       const averageGrade = grades.length > 0 ? Math.round(totalGrades / grades.length) : 0;
 
-const pendingSubmissions = assignments.reduce((count, assignment) => {
+      const pendingSubmissions = assignments.reduce((count, assignment) => {
         return count + (assignment.submissions?.filter(s => s.status === 'pending').length || 0);
       }, 0);
 
@@ -60,14 +61,14 @@ const pendingSubmissions = assignments.reduce((count, assignment) => {
         pendingSubmissions
       });
 
-      // Create recent activity
-const activities = [
-        { type: "assignment", message: `${pendingSubmissions} assignment submissions pending review`, time: "1 hour ago", icon: "ClipboardList" },
-        { type: "attendance", message: `${presentToday} students marked present today`, time: "2 hours ago", icon: "Calendar" },
-        { type: "grade", message: `${grades.length} grades recorded this week`, time: "5 hours ago", icon: "FileText" },
-        { type: "student", message: `${students.filter(s => s.status === "active").length} active students enrolled`, time: "1 day ago", icon: "Users" },
-        { type: "class", message: `${classes.length} classes scheduled`, time: "2 days ago", icon: "BookOpen" }
-      ];
+      // Generate real-time activities based on actual database records
+      const activities = generateRecentActivities({
+        students,
+        classes,
+        attendance,
+        grades,
+        assignments
+      });
 
       setRecentActivity(activities);
     } catch (err) {
@@ -75,6 +76,131 @@ const activities = [
     } finally {
       setLoading(false);
     }
+  };
+
+  // Generate real-time activities based on actual database operations
+  const generateRecentActivities = ({ students, classes, attendance, grades, assignments }) => {
+    const activities = [];
+    const now = new Date();
+
+    // Helper function to format relative time
+    const getRelativeTime = (timestamp) => {
+      if (!timestamp) return "recently";
+      
+      const date = new Date(timestamp);
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / (1000 * 60));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffMins < 1) return "just now";
+      if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      return format(date, "MMM d, yyyy");
+    };
+
+    // Process student activities
+    students.forEach(student => {
+      if (student.CreatedOn) {
+        activities.push({
+          type: "student",
+          message: `Student ${student.first_name_c || student.Name || 'New Student'} enrolled`,
+          time: getRelativeTime(student.CreatedOn),
+          icon: "UserPlus",
+          timestamp: new Date(student.CreatedOn)
+        });
+      }
+      if (student.ModifiedOn && student.ModifiedOn !== student.CreatedOn) {
+        activities.push({
+          type: "student",
+          message: `Student ${student.first_name_c || student.Name || 'Student'} information updated`,
+          time: getRelativeTime(student.ModifiedOn),
+          icon: "Users",
+          timestamp: new Date(student.ModifiedOn)
+        });
+      }
+    });
+
+    // Process assignment activities
+    assignments.forEach(assignment => {
+      if (assignment.CreatedOn) {
+        activities.push({
+          type: "assignment",
+          message: `Assignment "${assignment.title || assignment.Name}" created`,
+          time: getRelativeTime(assignment.CreatedOn),
+          icon: "ClipboardList",
+          timestamp: new Date(assignment.CreatedOn)
+        });
+      }
+      if (assignment.ModifiedOn && assignment.ModifiedOn !== assignment.CreatedOn) {
+        activities.push({
+          type: "assignment",
+          message: `Assignment "${assignment.title || assignment.Name}" updated`,
+          time: getRelativeTime(assignment.ModifiedOn),
+          icon: "Edit",
+          timestamp: new Date(assignment.ModifiedOn)
+        });
+      }
+    });
+
+    // Process grade activities
+    grades.forEach(grade => {
+      if (grade.CreatedOn) {
+        activities.push({
+          type: "grade",
+          message: `Grade ${grade.score} recorded`,
+          time: getRelativeTime(grade.CreatedOn),
+          icon: "FileText",
+          timestamp: new Date(grade.CreatedOn)
+        });
+      }
+    });
+
+    // Process attendance activities
+    attendance.forEach(record => {
+      if (record.CreatedOn) {
+        const statusText = record.status === 'present' ? 'marked present' : 
+                          record.status === 'absent' ? 'marked absent' : 
+                          record.status === 'late' ? 'marked late' : 'attendance recorded';
+        activities.push({
+          type: "attendance",
+          message: `Student ${statusText} for ${format(new Date(record.date), "MMM d")}`,
+          time: getRelativeTime(record.CreatedOn),
+          icon: "Calendar",
+          timestamp: new Date(record.CreatedOn)
+        });
+      }
+    });
+
+    // Process class activities
+    classes.forEach(cls => {
+      if (cls.CreatedOn) {
+        activities.push({
+          type: "class",
+          message: `Class "${cls.subject || cls.Name}" scheduled`,
+          time: getRelativeTime(cls.CreatedOn),
+          icon: "BookOpen",
+          timestamp: new Date(cls.CreatedOn)
+        });
+      }
+      if (cls.ModifiedOn && cls.ModifiedOn !== cls.CreatedOn) {
+        activities.push({
+          type: "class",
+          message: `Class "${cls.subject || cls.Name}" updated`,
+          time: getRelativeTime(cls.ModifiedOn),
+          icon: "BookOpen",
+          timestamp: new Date(cls.ModifiedOn)
+        });
+      }
+    });
+
+    // Sort by timestamp (most recent first) and return top 10
+    return activities
+      .filter(activity => activity.timestamp)
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, 10)
+      .map(({ timestamp, ...activity }) => activity); // Remove timestamp from final output
   };
 
   useEffect(() => {
