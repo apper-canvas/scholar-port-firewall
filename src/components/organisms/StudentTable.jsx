@@ -43,25 +43,25 @@ const StudentTable = ({ students, onEdit, onDelete, onView }) => {
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   className="hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <td className="py-4 px-6">
+<td className="py-4 px-6">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mr-3">
-<span className="text-white font-medium text-sm">
-                          {(student?.firstName?.[0] || "?")}{(student?.lastName?.[0] || "?")}
+                        <span className="text-white font-medium text-sm">
+                          {(student?.first_name_c?.[0] || "?")}{(student?.last_name_c?.[0] || "?")}
                         </span>
                       </div>
                       <div>
                         <div className="font-medium text-gray-900">
-                          {student.firstName} {student.lastName}
+                          {student.first_name_c || ''} {student.last_name_c || ''}
                         </div>
-                        <div className="text-sm text-gray-500">{student.email}</div>
+                        <div className="text-sm text-gray-500">{student.email_c}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-gray-900">
-                    Grade {student.gradeLevel}
-                  </td>
 <td className="py-4 px-6 text-gray-900">
+                    Grade {student.grade_level_c}
+                  </td>
+                  <td className="py-4 px-6 text-gray-900">
                     {format(new Date(student.enrollment_date_c), "MMM dd, yyyy")}
                   </td>
                   <td className="py-4 px-6">

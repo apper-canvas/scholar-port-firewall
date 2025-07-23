@@ -76,12 +76,12 @@ const GradeGrid = ({ students, assignments, grades, onGradeChange, onSave }) => 
                       <div className="flex items-center">
                         <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mr-3">
                           <span className="text-white font-medium text-xs">
-                            {student.first_name_c[0]}{student.last_name_c[0]}
+                            {(student.first_name_c || '?').charAt(0)}{(student.last_name_c || '?').charAt(0)}
                           </span>
                         </div>
                         <div>
                           <div className="font-medium text-gray-900 text-sm">
-                            {student.first_name_c} {student.last_name_c}
+                            {student.first_name_c || ''} {student.last_name_c || ''}
                           </div>
                           <div className="text-xs text-gray-500">Grade {student.grade_level_c}</div>
                         </div>
