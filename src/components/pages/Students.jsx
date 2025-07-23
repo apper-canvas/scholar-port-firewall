@@ -134,9 +134,9 @@ const Students = ({ onMenuClick }) => {
             </Button>
           )
         }
-      />
+/>
 
-      <main className="p-6">
+      <main className="p-6 overflow-y-auto max-h-[calc(100vh-200px)]">
         <AnimatePresence mode="wait">
           {renderContent()}
         </AnimatePresence>
