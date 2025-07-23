@@ -49,17 +49,17 @@ const AttendanceGrid = ({ students, attendance, selectedDate, onAttendanceChange
                 transition={{ duration: 0.3, delay: index * 0.05 }}
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
               >
-                <div className="flex items-center">
+<div className="flex items-center">
                   <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mr-4">
                     <span className="text-white font-medium text-sm">
-                      {student.first_name_c?.[0] || ''}{student.last_name_c?.[0] || ''}
+                      {(student.first_name_c || '').charAt(0)}{(student.last_name_c || '').charAt(0)}
                     </span>
                   </div>
                   <div>
                     <div className="font-medium text-gray-900">
-                      {student.first_name_c} {student.last_name_c}
+                      {student.first_name_c || ''} {student.last_name_c || ''}
                     </div>
-                    <div className="text-sm text-gray-500">Grade {student.grade_level_c}</div>
+                    <div className="text-sm text-gray-500">Grade {student.grade_level_c || 'N/A'}</div>
                   </div>
                 </div>
 
