@@ -371,83 +371,61 @@ return (
               <CardContent className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
+<FormField
                       label="Assignment Title"
+                      value={formData.title}
+                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                      placeholder="Enter assignment title"
                       required
                       error=""
-                    >
-                      <Input
-                        value={formData.title}
-                        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                        placeholder="Enter assignment title"
-                        required
-                      />
-                    </FormField>
+                    />
 
-                    <FormField
+<FormField
                       label="Class"
+                      type="select"
+                      value={formData.classId}
+                      onChange={(e) => setFormData(prev => ({ ...prev, classId: e.target.value }))}
+                      placeholder="Select a class"
+                      options={classes.map(cls => ({
+                        value: cls.Id.toString(),
+                        label: cls.name
+                      }))}
                       required
                       error=""
-                    >
-                      <Select
-                        value={formData.classId}
-                        onChange={(e) => setFormData(prev => ({ ...prev, classId: e.target.value }))}
-                        required
-                      >
-                        <option value="">Select a class</option>
-                        {classes.map(cls => (
-                          <option key={cls.Id} value={cls.Id.toString()}>
-                            {cls.name}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormField>
+                    />
 
-                    <FormField
+<FormField
                       label="Category"
+                      type="select"
+                      value={formData.category}
+                      onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                      placeholder="Select category"
+                      options={categories.map(category => ({
+                        value: category,
+                        label: category
+                      }))}
                       required
                       error=""
-                    >
-                      <Select
-                        value={formData.category}
-                        onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                        required
-                      >
-                        <option value="">Select category</option>
-                        {categories.map(category => (
-                          <option key={category} value={category}>
-                            {category}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormField>
+                    />
 
-                    <FormField
+<FormField
                       label="Total Points"
+                      type="number"
+                      value={formData.totalPoints}
+                      onChange={(e) => setFormData(prev => ({ ...prev, totalPoints: e.target.value }))}
+                      placeholder="Enter total points"
                       required
                       error=""
-                    >
-                      <Input
-                        type="number"
-                        value={formData.totalPoints}
-                        onChange={(e) => setFormData(prev => ({ ...prev, totalPoints: e.target.value }))}
-                        placeholder="Enter total points"
-                        required
-                      />
-                    </FormField>
+                    />
 
-                    <FormField
+<FormField
                       label="Due Date"
+                      type="date"
+                      value={formData.dueDate}
+                      onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
                       required
                       error=""
-                    >
-                      <Input
-                        type="date"
-                        value={formData.dueDate}
-                        onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
-                        required
-                      />
-                    </FormField>
+                    />
 
                     <div className="flex items-center space-x-2">
                       <input
@@ -463,31 +441,23 @@ return (
                     </div>
                   </div>
 
-                  <FormField
+<FormField
                     label="Description"
+                    type="textarea"
+                    value={formData.description}
+                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Enter assignment description"
                     error=""
-                  >
-                    <textarea
-                      value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="Enter assignment description"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      rows={3}
-                    />
-                  </FormField>
+                  />
 
-                  <FormField
+<FormField
                     label="Instructions"
+                    type="textarea"
+                    value={formData.instructions}
+                    onChange={(e) => setFormData(prev => ({ ...prev, instructions: e.target.value }))}
+                    placeholder="Enter detailed instructions for students"
                     error=""
-                  >
-                    <textarea
-                      value={formData.instructions}
-                      onChange={(e) => setFormData(prev => ({ ...prev, instructions: e.target.value }))}
-                      placeholder="Enter detailed instructions for students"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      rows={4}
-                    />
-                  </FormField>
+                  />
 
                   <div className="flex justify-end space-x-4 pt-4 border-t border-gray-200">
                     <Button type="button" variant="outline" onClick={handleCancel}>
