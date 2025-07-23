@@ -88,7 +88,7 @@ export const classService = {
     }
   },
 
-  async create(classData) {
+async create(classData) {
     try {
       const { ApperClient } = window.ApperSDK;
       const apperClient = new ApperClient({
@@ -96,13 +96,28 @@ export const classService = {
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
 
+      // Get all students to map IDs to picklist indices
+      const students = await this.getAll(); // This will get students for mapping
+      
+      // Map student IDs to picklist values (1-8 based on schema)
+      let studentPicklistValues = "";
+      if (classData.studentIds && classData.studentIds.length > 0) {
+        const mappedValues = classData.studentIds
+          .map(id => {
+            const studentIndex = students.findIndex(s => s.Id === id);
+            return studentIndex >= 0 ? (studentIndex + 1).toString() : null;
+          })
+          .filter(value => value !== null && parseInt(value) <= 8);
+        studentPicklistValues = mappedValues.join(',');
+      }
+
       const params = {
         records: [{
           Name: classData.name,
           subject_c: classData.subject,
           period_c: classData.period,
           room_c: classData.room,
-          student_ids_c: classData.studentIds?.join(',') || ""
+          student_ids_c: studentPicklistValues
         }]
       };
 
@@ -140,13 +155,28 @@ export const classService = {
     }
   },
 
-  async update(id, classData) {
+async update(id, classData) {
     try {
       const { ApperClient } = window.ApperSDK;
       const apperClient = new ApperClient({
         apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
+
+      // Get all students to map IDs to picklist indices
+      const students = await this.getAll(); // This will get students for mapping
+      
+      // Map student IDs to picklist values (1-8 based on schema)
+      let studentPicklistValues = "";
+      if (classData.studentIds && classData.studentIds.length > 0) {
+        const mappedValues = classData.studentIds
+          .map(id => {
+            const studentIndex = students.findIndex(s => s.Id === id);
+            return studentIndex >= 0 ? (studentIndex + 1).toString() : null;
+          })
+          .filter(value => value !== null && parseInt(value) <= 8);
+        studentPicklistValues = mappedValues.join(',');
+      }
 
       const params = {
         records: [{
@@ -155,7 +185,7 @@ export const classService = {
           subject_c: classData.subject,
           period_c: classData.period,
           room_c: classData.room,
-          student_ids_c: classData.studentIds?.join(',') || ""
+          student_ids_c: studentPicklistValues
         }]
       };
 
