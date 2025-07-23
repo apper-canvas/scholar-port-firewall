@@ -492,7 +492,7 @@ const handleSubmit = async (e) => {
           </motion.div>
         )}
 
-        {/* Assignments List */}
+{/* Assignments List */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -500,7 +500,7 @@ const handleSubmit = async (e) => {
               Assignments ({filteredAssignments.length})
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="max-h-[600px] overflow-y-auto">
             {filteredAssignments.length === 0 ? (
               <Empty 
                 title="No assignments found"
