@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "firstName": "Emily",
+    "lastName": "Johnson",
+    "email": "emily.johnson@email.com",
+    "gradeLevel": 11,
+    "enrollmentDate": "2023-08-15",
+    "parentContact": "555-0101",
+    "status": "active"
+  },
+  {
+    "Id": 2,
+    "firstName": "Michael",
+    "lastName": "Davis",
+    "email": "michael.davis@email.com",
+    "gradeLevel": 10,
+    "enrollmentDate": "2023-08-15",
+    "parentContact": "555-0102",
+    "status": "active"
+  },
+  {
+    "Id": 3,
+    "firstName": "Sarah",
+    "lastName": "Wilson",
+    "email": "sarah.wilson@email.com",
+    "gradeLevel": 12,
+    "enrollmentDate": "2023-08-15",
+    "parentContact": "555-0103",
+    "status": "active"
+  },
+  {
+    "Id": 4,
+    "firstName": "David",
+    "lastName": "Brown",
+    "email": "david.brown@email.com",
+    "gradeLevel": 9,
+    "enrollmentDate": "2023-08-15",
+    "parentContact": "555-0104",
+    "status": "pending"
+  },
+  {
+    "Id": 5,
+    "firstName": "Jessica",
+    "lastName": "Taylor",
+    "email": "jessica.taylor@email.com",
+    "gradeLevel": 11,
+    "enrollmentDate": "2023-08-15",
+    "parentContact": "555-0105",
+    "status": "active"
+  },
+  {
+    "Id": 6,
+    "firstName": "Ryan",
+    "lastName": "Anderson",
+    "email": "ryan.anderson@email.com",
+    "gradeLevel": 10,
+    "enrollmentDate": "2023-08-15",
+    "parentContact": "555-0106",
+    "status": "active"
+  },
+  {
+    "Id": 7,
+    "firstName": "Ashley",
+    "lastName": "Martinez",
+    "email": "ashley.martinez@email.com",
+    "gradeLevel": 12,
+    "enrollmentDate": "2023-08-15",
+    "parentContact": "555-0107",
+    "status": "inactive"
+  },
+  {
+    "Id": 8,
+    "firstName": "Christopher",
+    "lastName": "Garcia",
+    "email": "christopher.garcia@email.com",
+    "gradeLevel": 9,
+    "enrollmentDate": "2023-08-15",
+    "parentContact": "555-0108",
+    "status": "active"
+  }
+]

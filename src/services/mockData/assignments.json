@@ -1,0 +1,50 @@
+[
+  {
+    "Id": 1,
+    "classId": 1,
+    "title": "Quiz 1",
+    "totalPoints": 100,
+    "dueDate": "2024-01-15",
+    "category": "Quiz"
+  },
+  {
+    "Id": 2,
+    "classId": 1,
+    "title": "Homework 1",
+    "totalPoints": 50,
+    "dueDate": "2024-01-10",
+    "category": "Homework"
+  },
+  {
+    "Id": 3,
+    "classId": 1,
+    "title": "Midterm Exam",
+    "totalPoints": 200,
+    "dueDate": "2024-01-25",
+    "category": "Exam"
+  },
+  {
+    "Id": 4,
+    "classId": 2,
+    "title": "Essay 1",
+    "totalPoints": 100,
+    "dueDate": "2024-01-20",
+    "category": "Essay"
+  },
+  {
+    "Id": 5,
+    "classId": 2,
+    "title": "Reading Quiz",
+    "totalPoints": 25,
+    "dueDate": "2024-01-12",
+    "category": "Quiz"
+  },
+  {
+    "Id": 6,
+    "classId": 3,
+    "title": "Lab Report 1",
+    "totalPoints": 75,
+    "dueDate": "2024-01-18",
+    "category": "Lab"
+  }
+]

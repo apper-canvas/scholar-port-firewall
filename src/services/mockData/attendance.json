@@ -1,0 +1,66 @@
+[
+  {
+    "Id": 1,
+    "studentId": 1,
+    "classId": 1,
+    "date": "2024-01-15",
+    "status": "present",
+    "note": ""
+  },
+  {
+    "Id": 2,
+    "studentId": 3,
+    "classId": 1,
+    "date": "2024-01-15",
+    "status": "late",
+    "note": "Traffic delay"
+  },
+  {
+    "Id": 3,
+    "studentId": 5,
+    "classId": 1,
+    "date": "2024-01-15",
+    "status": "present",
+    "note": ""
+  },
+  {
+    "Id": 4,
+    "studentId": 7,
+    "classId": 1,
+    "date": "2024-01-15",
+    "status": "absent",
+    "note": "Sick"
+  },
+  {
+    "Id": 5,
+    "studentId": 1,
+    "classId": 1,
+    "date": "2024-01-16",
+    "status": "present",
+    "note": ""
+  },
+  {
+    "Id": 6,
+    "studentId": 3,
+    "classId": 1,
+    "date": "2024-01-16",
+    "status": "present",
+    "note": ""
+  },
+  {
+    "Id": 7,
+    "studentId": 5,
+    "classId": 1,
+    "date": "2024-01-16",
+    "status": "excused",
+    "note": "Doctor appointment"
+  },
+  {
+    "Id": 8,
+    "studentId": 7,
+    "classId": 1,
+    "date": "2024-01-16",
+    "status": "present",
+    "note": ""
+  }
+]
