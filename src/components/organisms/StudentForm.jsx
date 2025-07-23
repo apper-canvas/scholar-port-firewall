@@ -6,59 +6,59 @@ import ApperIcon from "@/components/ApperIcon";
 import { toast } from "react-toastify";
 
 const StudentForm = ({ student, onSubmit, onCancel }) => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    gradeLevel: "",
-    enrollmentDate: "",
-    parentContact: "",
-    status: "active"
+const [formData, setFormData] = useState({
+    first_name_c: "",
+    last_name_c: "",
+    email_c: "",
+    grade_level_c: "",
+    enrollment_date_c: "",
+    parent_contact_c: "",
+    status_c: "active"
   });
 
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+useEffect(() => {
     if (student) {
       setFormData({
-        firstName: student.firstName || "",
-        lastName: student.lastName || "",
-        email: student.email || "",
-        gradeLevel: student.gradeLevel || "",
-        enrollmentDate: student.enrollmentDate || "",
-        parentContact: student.parentContact || "",
-        status: student.status || "active"
+        first_name_c: student.first_name_c || "",
+        last_name_c: student.last_name_c || "",
+        email_c: student.email_c || "",
+        grade_level_c: student.grade_level_c || "",
+        enrollment_date_c: student.enrollment_date_c || "",
+        parent_contact_c: student.parent_contact_c || "",
+        status_c: student.status_c || "active"
       });
     }
   }, [student]);
 
-  const validateForm = () => {
+const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
+    if (!formData.first_name_c.trim()) {
+      newErrors.first_name_c = "First name is required";
     }
 
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
+    if (!formData.last_name_c.trim()) {
+      newErrors.last_name_c = "Last name is required";
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+    if (!formData.email_c.trim()) {
+      newErrors.email_c = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email_c)) {
+      newErrors.email_c = "Email is invalid";
     }
 
-    if (!formData.gradeLevel) {
-      newErrors.gradeLevel = "Grade level is required";
+    if (!formData.grade_level_c) {
+      newErrors.grade_level_c = "Grade level is required";
     }
 
-    if (!formData.enrollmentDate) {
-      newErrors.enrollmentDate = "Enrollment date is required";
+    if (!formData.enrollment_date_c) {
+      newErrors.enrollment_date_c = "Enrollment date is required";
     }
 
-    if (!formData.parentContact.trim()) {
-      newErrors.parentContact = "Parent contact is required";
+    if (!formData.parent_contact_c.trim()) {
+      newErrors.parent_contact_c = "Parent contact is required";
     }
 
     setErrors(newErrors);
@@ -73,9 +73,9 @@ const StudentForm = ({ student, onSubmit, onCancel }) => {
       return;
     }
 
-    const studentData = {
+const studentData = {
       ...formData,
-      gradeLevel: parseInt(formData.gradeLevel)
+      grade_level_c: parseInt(formData.grade_level_c)
     };
 
     if (student) {
@@ -124,51 +124,51 @@ const StudentForm = ({ student, onSubmit, onCancel }) => {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
+<FormField
               label="First Name"
-              value={formData.firstName}
-              onChange={handleChange("firstName")}
+              value={formData.first_name_c}
+              onChange={handleChange("first_name_c")}
               placeholder="Enter first name"
               required
-              error={errors.firstName}
+              error={errors.first_name_c}
             />
 
             <FormField
               label="Last Name"
-              value={formData.lastName}
-              onChange={handleChange("lastName")}
+              value={formData.last_name_c}
+              onChange={handleChange("last_name_c")}
               placeholder="Enter last name"
               required
-              error={errors.lastName}
+              error={errors.last_name_c}
             />
 
-            <FormField
+<FormField
               label="Email"
               type="email"
-              value={formData.email}
-              onChange={handleChange("email")}
+              value={formData.email_c}
+              onChange={handleChange("email_c")}
               placeholder="Enter email address"
               required
-              error={errors.email}
+              error={errors.email_c}
             />
 
-            <FormField
+<FormField
               label="Grade Level"
               type="select"
-              value={formData.gradeLevel}
-              onChange={handleChange("gradeLevel")}
+              value={formData.grade_level_c}
+              onChange={handleChange("grade_level_c")}
               options={gradeOptions}
               required
-              error={errors.gradeLevel}
+              error={errors.grade_level_c}
             />
 
-            <FormField
+<FormField
               label="Enrollment Date"
               type="date"
-              value={formData.enrollmentDate}
-              onChange={handleChange("enrollmentDate")}
+              value={formData.enrollment_date_c}
+              onChange={handleChange("enrollment_date_c")}
               required
-              error={errors.enrollmentDate}
+              error={errors.enrollment_date_c}
             />
 
 <FormField
