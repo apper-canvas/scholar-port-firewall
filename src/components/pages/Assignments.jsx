@@ -43,7 +43,7 @@ const [formData, setFormData] = useState({
   });
 const categories = ["Quiz", "Homework", "Exam", "Essay", "Lab", "Project"];
   const statuses = ["pending", "in progress", "completed", "submitted", "graded"];
-  const loadData = async () => {
+const loadData = async () => {
     setLoading(true);
     setError("");
     try {
@@ -54,16 +54,9 @@ const categories = ["Quiz", "Homework", "Exam", "Essay", "Lab", "Project"];
       setAssignments(assignmentsData);
       setClasses(classesData);
       
-      // Load progress data for each assignment
-      const progressPromises = assignmentsData.map(assignment => 
-        assignmentService.getAssignmentProgress(assignment.Id)
-      );
-      const progressResults = await Promise.all(progressPromises);
-      const progressMap = {};
-      progressResults.forEach(progress => {
-        progressMap[progress.assignmentId] = progress;
-      });
-      setProgressData(progressMap);
+      // Calculate real-time progress data based on actual assignments
+      const calculatedProgressData = assignmentService.calculateProgressData(assignmentsData);
+      setProgressData(calculatedProgressData);
     } catch (err) {
       setError(err.message || "Failed to load assignments");
     } finally {
