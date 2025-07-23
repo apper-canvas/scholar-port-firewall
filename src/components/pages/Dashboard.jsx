@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/organisms/Header";
 import StatCard from "@/components/molecules/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
@@ -14,7 +15,8 @@ import { assignmentService } from "@/services/api/assignmentService";
 import { format } from "date-fns";
 
 const Dashboard = ({ onMenuClick }) => {
-const [dashboardData, setDashboardData] = useState({
+  const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState({
     totalStudents: 0,
     totalClasses: 0,
     presentToday: 0,
@@ -77,11 +79,27 @@ const activities = [
 
   useEffect(() => {
     loadDashboardData();
-  }, []);
+}, []);
+
+  // Quick action handlers
+  const handleAddStudent = () => {
+    navigate('/students');
+  };
+
+  const handleTakeAttendance = () => {
+    navigate('/attendance');
+  };
+
+  const handleEnterGrades = () => {
+    navigate('/grades');
+  };
+
+  const handleCreateAssignment = () => {
+    navigate('/assignments');
+  };
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadDashboardData} />;
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <Header 
@@ -179,9 +197,10 @@ const activities = [
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  <motion.div
+<motion.div
                     whileHover={{ scale: 1.02 }}
                     className="p-4 bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg cursor-pointer border border-primary-200"
+                    onClick={handleAddStudent}
                   >
                     <div className="flex flex-col items-center text-center">
                       <ApperIcon name="UserPlus" className="text-primary-600 mb-2" size={24} />
@@ -189,9 +208,10 @@ const activities = [
                     </div>
                   </motion.div>
 
-                  <motion.div
+<motion.div
                     whileHover={{ scale: 1.02 }}
                     className="p-4 bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-lg cursor-pointer border border-secondary-200"
+                    onClick={handleTakeAttendance}
                   >
                     <div className="flex flex-col items-center text-center">
                       <ApperIcon name="Calendar" className="text-secondary-600 mb-2" size={24} />
@@ -199,9 +219,10 @@ const activities = [
                     </div>
                   </motion.div>
 
-                  <motion.div
+<motion.div
                     whileHover={{ scale: 1.02 }}
                     className="p-4 bg-gradient-to-br from-success-50 to-success-100 rounded-lg cursor-pointer border border-success-200"
+                    onClick={handleEnterGrades}
                   >
                     <div className="flex flex-col items-center text-center">
                       <ApperIcon name="FileText" className="text-success-600 mb-2" size={24} />
@@ -212,6 +233,7 @@ const activities = [
 <motion.div
                     whileHover={{ scale: 1.02 }}
                     className="p-4 bg-gradient-to-br from-warning-50 to-warning-100 rounded-lg cursor-pointer border border-warning-200"
+                    onClick={handleCreateAssignment}
                   >
                     <div className="flex flex-col items-center text-center">
                       <ApperIcon name="ClipboardList" className="text-warning-600 mb-2" size={24} />
