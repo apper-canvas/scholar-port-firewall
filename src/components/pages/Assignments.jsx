@@ -10,6 +10,7 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import ApperIcon from "@/components/ApperIcon";
 import FormField from "@/components/molecules/FormField";
+import Modal from "react-modal";
 import { motion } from "framer-motion";
 import { assignmentService } from "@/services/api/assignmentService";
 import { classService } from "@/services/api/classService";
@@ -345,19 +346,29 @@ return (
         )}
 
         {/* Assignment Form */}
-        {showForm && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {editingAssignment ? "Edit Assignment" : "Create New Assignment"}
-                </CardTitle>
+<Modal
+          isOpen={showForm}
+          onRequestClose={handleCancel}
+          className="fixed inset-0 flex items-center justify-center p-4 z-50"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
+          ariaHideApp={false}
+        >
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <Card className="border-0 shadow-none">
+              <CardHeader className="border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <CardTitle>
+                    {editingAssignment ? "Edit Assignment" : "Create New Assignment"}
+                  </CardTitle>
+                  <button
+                    onClick={handleCancel}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <ApperIcon name="X" size={20} />
+                  </button>
+                </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
@@ -478,7 +489,7 @@ return (
                     />
                   </FormField>
 
-                  <div className="flex justify-end space-x-4">
+                  <div className="flex justify-end space-x-4 pt-4 border-t border-gray-200">
                     <Button type="button" variant="outline" onClick={handleCancel}>
                       Cancel
                     </Button>
@@ -489,8 +500,8 @@ return (
                 </form>
               </CardContent>
             </Card>
-          </motion.div>
-        )}
+          </div>
+        </Modal>
 
 {/* Assignments List */}
         <Card>
