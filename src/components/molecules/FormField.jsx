@@ -14,9 +14,9 @@ const FormField = ({
   className = ""
 }) => {
   const renderInput = () => {
-    if (type === "select") {
+if (type === "select") {
       return (
-        <Select value={value} onChange={onChange} required={required}>
+        <Select value={value ?? ""} onChange={onChange} required={required}>
           <option value="">{placeholder || `Select ${label}`}</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -27,10 +27,10 @@ const FormField = ({
       );
     }
 
-    return (
+return (
       <Input
         type={type}
-        value={value}
+        value={value ?? ""}
         onChange={onChange}
         placeholder={placeholder}
         required={required}
