@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { studentService } from "./studentService";
 
 export const classService = {
   async getAll() {
@@ -96,8 +97,8 @@ async create(classData) {
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
 
-      // Get all students to map IDs to picklist indices
-      const students = await this.getAll(); // This will get students for mapping
+// Get all students to map IDs to picklist indices
+      const students = await studentService.getAll(); // Get students for mapping
       
       // Map student IDs to picklist values (1-8 based on schema)
       let studentPicklistValues = "";
@@ -163,8 +164,8 @@ async update(id, classData) {
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
 
-      // Get all students to map IDs to picklist indices
-      const students = await this.getAll(); // This will get students for mapping
+// Get all students to map IDs to picklist indices
+      const students = await studentService.getAll(); // Get students for mapping
       
       // Map student IDs to picklist values (1-8 based on schema)
       let studentPicklistValues = "";
