@@ -258,8 +258,8 @@ const handleSubmit = async (e) => {
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadData} />;
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+return (
+    <div className="h-screen bg-gradient-to-br from-gray-50 to-white overflow-hidden">
       <Header 
         title="Assignment Management" 
         onMenuClick={onMenuClick}
@@ -268,7 +268,7 @@ const handleSubmit = async (e) => {
         searchPlaceholder="Search assignments..."
       />
       
-      <main className="p-6">
+      <main className="h-full overflow-y-auto p-6">
         {/* Action Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
